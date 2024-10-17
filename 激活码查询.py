@@ -17,7 +17,7 @@ if "error" in data and data["error"]:
 elif "used" in data:
     if data["used"]:
         machine_code = data["regkey"]
-        regtime = data["regtime"]
+        regtime = data.get("regtime", None)
         print(f"已激活：{machine_code}")
         print(f"激活于：{regtime}")
     else:

@@ -22,7 +22,7 @@ if "error" in data and data["error"]:
     print("注册码未激活")
 elif "serial_number" in data:
     sn = data["serial_number"]
-    reg_time = data["register_time"]
+    reg_time = data.get("register_time", None)
     if sn:
         print(f"激活码：{sn}")
         print(f"注册于：{reg_time}")
