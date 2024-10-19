@@ -34,14 +34,24 @@ def query_by_activation_code(activation_code):
     data = response.json()
 
     if "error" in data and data["error"]:
+        print(data)
         return "激活码不存在"
     elif "used" in data:
         if data["used"]:
-            machine_code = data["regkey"]
-            reg_time = data.get("regtime", None)
-            source_ip = data.get("source_ip", None)
-            location = ip_location(source_ip)
-            return f"已激活: {machine_code} 激活于: {reg_time} 位置: {location} IP: {source_ip}"
+            machine_codes = data["regkey"]
+            reg_times = data.get("regtime", None)
+            source_ips = data.get("source_ip", None)
+
+            results = []
+            for machine_code, reg_time, source_ip in zip(
+                machine_codes, reg_times, source_ips
+            ):
+                location = ip_location(source_ip)
+                results.append(
+                    f"已激活: {machine_code} 激活于: {reg_time} 位置: {location} IP: {source_ip}"
+                )
+
+            return "\n".join(results)
         else:
             return "未激活"
     else:
