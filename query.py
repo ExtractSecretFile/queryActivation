@@ -15,6 +15,10 @@ def ip_location(ip: str):
 
     ip_info = db.find_info(ip, "CN")
     region = ip_info.region_name
+
+    if region == "本机地址":
+        return region
+
     city = ip_info.city_name
     return f"{region}省{city}市"
 
