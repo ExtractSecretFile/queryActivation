@@ -1,6 +1,20 @@
 import requests
 import json
 
+import ipdb
+
+db = ipdb.City("db/ipipfree.ipdb")
+
+
+def ip_location(ip: str):
+    if ip is None:
+        return "未知"
+
+    ip_info = db.find_info(ip, "CN")
+    region = ip_info.region_name
+    city = ip_info.city_name
+    return f"{region}省{city}市"
+
 
 def query_by_activation_code(activation_code):
     response = requests.post(
@@ -17,8 +31,10 @@ def query_by_activation_code(activation_code):
     elif "used" in data:
         if data["used"]:
             machine_code = data["regkey"]
-            regtime = data.get("regtime", None)
-            return f"已激活：{machine_code}, 激活于：{regtime}"
+            reg_time = data.get("regtime", None)
+            source_ip = data.get("source_ip", None)
+            location = ip_location(source_ip)
+            return f"已激活: {machine_code} 激活于: {reg_time} 位置: {location}"
         else:
             return "未激活"
     else:
@@ -40,9 +56,12 @@ def query_by_encrypted_sn(sn):
     elif "serial_number" in data:
         sn = data["serial_number"]
         reg_time = data.get("register_time", None)
+        source_ip = data.get("source_ip", None)
+        location = ip_location(source_ip)
         if sn:
             print(f"激活码：{sn}")
             print(f"注册于：{reg_time}")
+            print(f"位置：{location}")
         else:
             print("未注册")
     else:
