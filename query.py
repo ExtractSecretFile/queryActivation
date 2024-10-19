@@ -1,9 +1,12 @@
-import requests
+import os
 import json
+import requests
 
 import ipdb
 
 db = ipdb.City("db/ipipfree.ipdb")
+
+BASE_URL = os.environ.get("ESF_BASE_URL", "http://8.134.130.103:8000")
 
 
 def ip_location(ip: str):
@@ -18,7 +21,7 @@ def ip_location(ip: str):
 
 def query_by_activation_code(activation_code):
     response = requests.post(
-        "http://8.134.130.103:8000/validate",
+        f"{BASE_URL}/validate",
         headers={"Content-Type": "application/json"},
         data=json.dumps({"serial_number": activation_code}),
         timeout=10,
@@ -43,7 +46,7 @@ def query_by_activation_code(activation_code):
 
 def query_by_encrypted_sn(sn):
     response = requests.post(
-        "http://8.134.130.103:8000/reverse",
+        f"{BASE_URL}/reverse",
         headers={"Content-Type": "application/json"},
         data=json.dumps({"registeration_code": sn}),
         timeout=None,
