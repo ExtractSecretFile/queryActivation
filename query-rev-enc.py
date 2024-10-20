@@ -1,6 +1,6 @@
 import subprocess
 
-from query import query_by_encrypted_sn
+from querylib import query_by_encrypted_sn
 
 machine_code = input("请输入注册码: ")
 enc_sn = (

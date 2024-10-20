@@ -7,6 +7,7 @@ import ipdb
 db = ipdb.City("db/ipipfree.ipdb")
 
 BASE_URL = os.environ.get("ESF_BASE_URL", "http://8.134.130.103:8000")
+MULTI_ENABLED = False
 
 
 def ip_location(ip: str):
@@ -34,24 +35,27 @@ def query_by_activation_code(activation_code):
     data = response.json()
 
     if "error" in data and data["error"]:
-        print(data)
         return "激活码不存在"
     elif "used" in data:
         if data["used"]:
-            machine_codes = data["regkey"]
-            reg_times = data.get("regtime", None)
-            source_ips = data.get("source_ip", None)
+            machine_code = data["regkey"]
+            reg_time = data.get("regtime", None)
+            source_ip = data.get("source_ip", None)
 
-            results = []
-            for machine_code, reg_time, source_ip in zip(
-                machine_codes, reg_times, source_ips
-            ):
+            if MULTI_ENABLED:
                 location = ip_location(source_ip)
-                results.append(
-                    f"已激活: {machine_code} 激活于: {reg_time} 位置: {location} IP: {source_ip}"
-                )
+                return f"已激活: {machine_code} 激活于: {reg_time} 位置: {location} IP: {source_ip}"
+            else:
+                results = []
+                for machine_code, reg_time, source_ip in zip(
+                    machine_code, reg_time, source_ip
+                ):
+                    location = ip_location(source_ip)
+                    results.append(
+                        f"已激活: {machine_code} 激活于: {reg_time} 位置: {location} IP: {source_ip}"
+                    )
 
-            return "\n".join(results)
+                return "\n".join(results)
         else:
             return "未激活"
     else:

@@ -1,6 +1,6 @@
 import sys
 
-from query import query_by_activation_code
+from querylib import query_by_activation_code
 
 filename = sys.argv[1]
 with open(filename, encoding="utf-8") as f:
