@@ -42,7 +42,7 @@ def query_by_activation_code(activation_code):
             reg_time = data.get("regtime", None)
             source_ip = data.get("source_ip", None)
 
-            if MULTI_ENABLED:
+            if not MULTI_ENABLED:
                 location = ip_location(source_ip)
                 return f"已激活: {machine_code} 激活于: {reg_time} 位置: {location} IP: {source_ip}"
             else:
