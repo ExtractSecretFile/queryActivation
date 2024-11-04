@@ -7,7 +7,6 @@ import ipdb
 db = ipdb.City("db/ipipfree.ipdb")
 
 BASE_URL = os.environ.get("ESF_BASE_URL", "http://8.134.130.103:8000")
-MULTI_ENABLED = False
 
 
 def ip_location(ip: str):
@@ -42,10 +41,7 @@ def query_by_activation_code(activation_code):
             reg_time = data.get("regtime", None)
             source_ip = data.get("source_ip", None)
 
-            if not MULTI_ENABLED:
-                location = ip_location(source_ip)
-                return f"已激活: {machine_code} 激活于: {reg_time} 位置: {location} IP: {source_ip}"
-            else:
+            if isinstance(source_ip, list):
                 results = []
                 for machine_code, reg_time, source_ip in zip(
                     machine_code, reg_time, source_ip
@@ -56,6 +52,9 @@ def query_by_activation_code(activation_code):
                     )
 
                 return "\n".join(results)
+            else:
+                location = ip_location(source_ip)
+                return f"已激活: {machine_code} 激活于: {reg_time} 位置: {location} IP: {source_ip}"
         else:
             return "未激活"
     else:
